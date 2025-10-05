@@ -1,6 +1,8 @@
+import { PencilLine } from 'lucide-react'
 import { AppFooter, AppHeader, AppSidebar } from './components/common'
 import { SkeletonHotTopic, SkeletonNewTopic } from './components/skeleton'
 import { ThemeProvider } from './components/theme-provider'
+import { Button } from './components/ui'
 
 export default function App() {
   return (
@@ -9,6 +11,15 @@ export default function App() {
         <AppHeader />
         <div className="container">
           <main className="w-full h-full min-h-[720px] flex p-6 gap-6">
+            <div className="fixed right-1/2 bottom-10 translate-x-1/2 z-20 items-center">
+              <Button
+                variant={'destructive'}
+                className="!py-5 !px-6 rounded-full"
+              >
+                <PencilLine />
+                나만의 토픽 작성
+              </Button>
+            </div>
             {/* 카테고리 사이드바 */}
             <AppSidebar />
             {/* 토픽 컨텐츠 */}
@@ -18,7 +29,7 @@ export default function App() {
                 <div className="flex flex-col gap1">
                   <div className="flex item-center gap-2">
                     <img
-                      src="/public/assets/fire.gif"
+                      src="/assets/gifs/gif-001.gif"
                       alt="@IMG"
                       className="w-7 h-7"
                     />
@@ -43,7 +54,7 @@ export default function App() {
                 <div className="flex flex-col gap1">
                   <div className="flex item-center gap-2">
                     <img
-                      src="/public/assets/writing-hand.gif"
+                      src="/assets/gifs/gif-002.gif"
                       alt="@IMG"
                       className="w-7 h-7"
                     />
