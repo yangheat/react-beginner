@@ -1,7 +1,9 @@
-import { NavLink } from 'react-router'
+import { NavLink, useNavigate } from 'react-router'
 import { Separator } from '../ui'
 
 function AppHeader() {
+  const navigator = useNavigate()
+
   return (
     <header className="fixed top-0 z-10  w-full flex items-center justify-center bg-[#121212]">
       <div className="w-full max-w-[1328px] flex items-center justify-between px-6 py-3">
@@ -11,6 +13,7 @@ function AppHeader() {
             src="https://github.com/yangheat.png"
             alt="@LOGO"
             className="w-6 h-6 cursor-pointer"
+            onClick={() => navigator('/')}
           />
           <div className="flex items-center gap-5">
             <div className="font-semibold">토픽 인사이트</div>

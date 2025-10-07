@@ -38,7 +38,7 @@ export default function Signin() {
 
   return (
     <main className="w-full h-full min-h-[720px] flex items-start justify-center p-6 gap-6">
-      <div className="w-100 max-w-100, flex flex-col px-6 gap-6">
+      <div className="w-100 max-w-100 flex flex-col px-6 gap-6">
         <div className="flex flex-col">
           <h4 className="scroll-m-20 text-xl font-semibold traking-tight">
             로그인
@@ -107,7 +107,7 @@ export default function Signin() {
                 </Button>
                 <div className="text-center">
                   계정이 없으신가요?
-                  <NavLink to={'sign-up'} className="underline ml-1">
+                  <NavLink to={'/sign-up'} className="underline ml-1">
                     회원가입
                   </NavLink>
                 </div>
