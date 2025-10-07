@@ -1,6 +1,10 @@
+import { useState } from 'react'
+import supabase from '@/lib/supabase'
+
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
+import { NavLink, useNavigate } from 'react-router'
 
 import {
   Button,
@@ -14,15 +18,8 @@ import {
   Input,
   Label
 } from '@/components/ui'
-import {
-  ArrowLeft,
-  Asterisk,
-  ChevronRight,
-  EyeOff,
-  MoveLeft
-} from 'lucide-react'
-import { NavLink } from 'react-router'
-import { useState } from 'react'
+import { ArrowLeft, Asterisk, ChevronRight } from 'lucide-react'
+import { toast } from 'sonner'
 
 const formSchema = z
   .object({
@@ -47,6 +44,7 @@ const formSchema = z
   })
 
 export default function Signup() {
+  const navigate = useNavigate()
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: { email: '', password: '', confirmPassword: '' }
@@ -56,10 +54,35 @@ export default function Signup() {
   const [privacyAgreed, setPrivacyAgreed] = useState<boolean>(false) // 개인정보 수집 및 이용약관 동의 여부
   const [marketingAgreed, setMarketingAgreed] = useState<boolean>(false) // 마케팅 및 광고 수신약관 동의 여부
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    console.log(values)
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    if (!serviceAgreed || !privacyAgreed) {
+      // 경고 메시지 - Toast UI 발생
+      toast.warning('필수 동의항목을 선택해주세요.')
+      return
+    }
+
+    try {
+      const { data, error } = await supabase.auth.signUp({
+        email: values.email,
+        password: values.password
+      })
+
+      // 회원가입 실패
+      if (error) {
+        return
+      }
+
+      // 회원가입 성공
+      if (data) {
+        // 성공 메시지 - Toast UI 발생
+        // 로그인 페이지로 리다이렉트
+        toast.success('로그인에 성공했습니다.')
+        navigate('/sign-in')
+      }
+    } catch (error) {
+      console.log(error)
+      throw new Error(`${error}`)
+    }
   }
 
   return (
@@ -102,7 +125,11 @@ export default function Signup() {
                       비밀번호
                     </FormLabel>
                     <FormControl>
-                      <Input placeholder="비밀번호를 입력하세요." {...field} />
+                      <Input
+                        type="password"
+                        placeholder="비밀번호를 입력하세요."
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -119,6 +146,7 @@ export default function Signup() {
                     </FormLabel>
                     <FormControl>
                       <Input
+                        type="password"
                         placeholder="비밀번호 확인을 입력하세요."
                         {...field}
                       />

@@ -26,3 +26,4 @@ export {
   FormField,
 } from './form'
 export { Checkbox } from './checkbox'
+export { Toaster } from './sonner'
