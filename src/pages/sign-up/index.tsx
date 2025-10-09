@@ -62,22 +62,45 @@ export default function Signup() {
     }
 
     try {
-      const { data, error } = await supabase.auth.signUp({
+      const {
+        data: { user, session },
+        error
+      } = await supabase.auth.signUp({
         email: values.email,
         password: values.password
       })
 
       // 회원가입 실패
       if (error) {
+        toast.error(error.message)
         return
       }
 
       // 회원가입 성공
-      if (data) {
-        // 성공 메시지 - Toast UI 발생
-        // 로그인 페이지로 리다이렉트
-        toast.success('로그인에 성공했습니다.')
-        navigate('/sign-in')
+      if (user && session) {
+        const { data, error } = await supabase
+          .from('서비스 사용자(유저)')
+          .insert([
+            {
+              id: user.id,
+              service_agreed: serviceAgreed,
+              privacy_agreed: privacyAgreed,
+              marketing_agreed: marketingAgreed
+            }
+          ])
+          .select()
+
+        if (data) {
+          // 성공 메시지 - Toast UI 발생
+          // 로그인 페이지로 리다이렉트
+          toast.success('로그인에 성공했습니다.')
+          navigate('/sign-in')
+        }
+
+        if (error) {
+          toast.error(error.message)
+          return
+        }
       }
     } catch (error) {
       console.log(error)
