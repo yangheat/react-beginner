@@ -93,7 +93,7 @@ export default function Signup() {
         if (data) {
           // 성공 메시지 - Toast UI 발생
           // 로그인 페이지로 리다이렉트
-          toast.success('로그인에 성공했습니다.')
+          toast.success('회원가입을 완료하였습니다.')
           navigate('/sign-in')
         }
 
