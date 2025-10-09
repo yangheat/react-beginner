@@ -15,6 +15,7 @@ import {
   FormMessage,
   Input
 } from '@/components/ui'
+import { useAuthStore } from '@/stores'
 
 const formSchema = z.object({
   email: z.email({
@@ -35,12 +36,12 @@ export default function Signin() {
     }
   })
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
+  const setId = useAuthStore((state) => state.setId)
+  const setEmail = useAuthStore((state) => state.setEmail)
+  const setRole = useAuthStore((state) => state.setRole)
+
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      /** data는 2개의 객체 데이터를 전달한다.
-       * 1. user
-       * 2. session
-       */
       const {
         data: { user, session },
         error
@@ -55,6 +56,14 @@ export default function Signin() {
       }
 
       if (user && session) {
+        /**
+         * data는 2개의 객체 데이터를 전달한다.
+         * 1. user
+         * 2. session
+         */
+        setId(user.id)
+        setEmail(user.email as string)
+        setRole(user.role as string)
         toast.success('로그인에 성공하였습니다.')
         navigator('/')
       }
