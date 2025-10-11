@@ -4,7 +4,7 @@ import { useAuthStore } from '@/stores'
 
 function AppHeader() {
   const navigator = useNavigate()
-  const email = useAuthStore((state) => state.email)
+  const user = useAuthStore((state) => state.user)
 
   const handleLogout = useAuthStore((state) => state.reset)
 
@@ -26,9 +26,9 @@ function AppHeader() {
           </div>
         </div>
         {/* 로그인 UI */}
-        {email ? (
+        {user.email ? (
           <div className="flex gap-5">
-            <span>${email}</span>
+            <span>{user.email}</span>
             <Separator orientation="vertical" className="!h-4" />
             <span className="cursor-pointer" onClick={handleLogout}>
               로그아웃

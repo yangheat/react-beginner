@@ -36,9 +36,7 @@ export default function Signin() {
     }
   })
 
-  const setId = useAuthStore((state) => state.setId)
-  const setEmail = useAuthStore((state) => state.setEmail)
-  const setRole = useAuthStore((state) => state.setRole)
+  const setUser = useAuthStore((state) => state.setUser)
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
@@ -61,9 +59,12 @@ export default function Signin() {
          * 1. user
          * 2. session
          */
-        setId(user.id)
-        setEmail(user.email as string)
-        setRole(user.role as string)
+        setUser({
+          id: user.id,
+          email: user.email as string,
+          role: user.role as string
+        })
+
         toast.success('로그인에 성공하였습니다.')
         navigator('/')
       }
