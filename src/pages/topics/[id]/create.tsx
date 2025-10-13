@@ -1,4 +1,4 @@
-import { AppEditor } from '@/components/common'
+import { AppEditor, AppFileUpload } from '@/components/common'
 import {
   Button,
   Input,
@@ -9,8 +9,7 @@ import {
   SelectItem,
   SelectLabel,
   SelectTrigger,
-  SelectValue,
-  Skeleton
+  SelectValue
 } from '@/components/ui'
 import { TOPIC_CATEGORY } from '@/constants/category.constant'
 import supabase from '@/lib/supabase'
@@ -111,13 +110,12 @@ export default function CreateTopic() {
             <Asterisk size={14} className="text-[#F96859]" />
             <Label className="text-muted-foreground">본문</Label>
           </div>
-          {/* <Skeleton className="w-full h-100" /> */}
           {/* BlockNote Text Editor UI */}
           <AppEditor setContent={setContent} />
         </div>
       </section>
       {/* 카테고리 및 썸네일 등록 */}
-      <section className="ㅈ-1/4 f-hull flex flex-col gap-6">
+      <section className="w-1/4 f-hull flex flex-col gap-6">
         <div className="flex flex-col pb-6 border-b">
           <span className="text-[#F96859] font-semibold">Step 02</span>
           <span className="text-base font-semibold">
@@ -150,8 +148,13 @@ export default function CreateTopic() {
             <Asterisk size={14} className="text-[#F96859]" />
             <Label className="text-muted-foreground">썸네일</Label>
           </div>
-          <Skeleton className="w-full, aspect-video" />
-          <Button variant={'outline'} className="border-0">
+          {/* 썸네일 UI */}
+          <AppFileUpload file={thumbnail} setChange={setThumbnail} />
+          <Button
+            variant={'outline'}
+            className="border-0"
+            onClick={() => setThumbnail(null)}
+          >
             <ImageOff />
             썸네일 제거
           </Button>
