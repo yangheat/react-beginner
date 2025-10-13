@@ -20,7 +20,7 @@ createRoot(document.getElementById('root')!).render(
             <Route index element={<App />} />
             <Route path="sign-up" element={<Signup />} />
             <Route path="sign-in" element={<Signin />} />
-            <Route path="topics/create" element={<CreateTopic />} />
+            <Route path="topics/:topicId/create" element={<CreateTopic />} />
           </Route>
         </Routes>
       </BrowserRouter>
