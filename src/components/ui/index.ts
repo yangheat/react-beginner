@@ -39,3 +39,4 @@ export {
   DialogTitle,
   DialogTrigger,
 } from './dialog'
+export { Badge, badgeVariants } from './badge'
