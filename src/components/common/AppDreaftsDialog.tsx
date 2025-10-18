@@ -76,7 +76,7 @@ export function AppDreaftsDialog({ children }: Props) {
             <div className="min-h-60 h-60 flex flex-col items-center justify-start gap-3 overflow-y-scroll">
               {drafts.map((draft, index) => (
                 <div
-                  className="w-full flex items-center justify-between py-2 px-4 rounded-md cursor-pointer bg-card/50"
+                  className="w-full flex items-center justify-between py-2 px-4 gap-3 rounded-md cursor-pointer bg-card/50"
                   onClick={() => navigator(`/topics/${draft.id}/create`)}
                 >
                   <div className="flex items-start gap-2">
@@ -84,7 +84,9 @@ export function AppDreaftsDialog({ children }: Props) {
                       {index + 1}
                     </Badge>
                     <div className="flex flex-col">
-                      <p>{draft.title || '등록된 제목이 없습니다.'}</p>
+                      <p className="line-clamp-1">
+                        {draft.title || '등록된 제목이 없습니다.'}
+                      </p>
                       <p className="text-xs text-muted-foreground">
                         작성일: {dayjs(draft.created_at).format('YYYY. MM. DD')}
                       </p>
