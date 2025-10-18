@@ -40,3 +40,12 @@ export {
   DialogTrigger,
 } from './dialog'
 export { Badge, badgeVariants } from './badge'
+export {
+  Card,
+  CardHeader,
+  CardFooter,
+  CardTitle,
+  CardAction,
+  CardDescription,
+  CardContent,
+} from './card'

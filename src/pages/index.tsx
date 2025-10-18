@@ -1,15 +1,45 @@
-import { useNavigate, useParams } from 'react-router'
-import { useAuthStore } from '@/stores'
-import { AppDreaftsDialog, AppSidebar } from '../components/common'
-import { SkeletonHotTopic, SkeletonNewTopic } from '../components/skeleton'
-import { Button } from '../components/ui'
-import { CircleSmall, NotebookPen, PencilLine } from 'lucide-react'
+import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router'
+
 import { toast } from 'sonner'
+import { CircleSmall, NotebookPen, PencilLine } from 'lucide-react'
+
 import supabase from '@/lib/supabase'
+import { useAuthStore } from '@/stores'
+
+import { AppDreaftsDialog, AppSidebar } from '../components/common'
+import { SkeletonHotTopic } from '../components/skeleton'
+import { Button } from '../components/ui'
+import { NewTopicCard } from '@/components/topics'
+
+import type { Topic } from '@/types/topic.type'
 
 export default function App() {
   const user = useAuthStore((state) => state.user)
   const navigate = useNavigate()
+
+  const [topics, setTopics] = useState<Topic[]>([])
+  // 발행된 토픽 조회
+  const fetchTopics = async () => {
+    try {
+      const { data: topics, error } = await supabase
+        .from('topic')
+        .select('*')
+        .eq('status', 'publish')
+
+      if (error) {
+        toast.error(error.message)
+        return
+      }
+
+      if (topics) {
+        setTopics(topics)
+      }
+    } catch (error) {
+      console.log(error)
+      throw error
+    }
+  }
 
   // 나만의 토픽 생성 버튼 클릭
   const moveTopicCreatePage = async () => {
@@ -42,6 +72,10 @@ export default function App() {
       navigate(`/topics/${data[0].id}/create`)
     }
   }
+
+  useEffect(() => {
+    fetchTopics()
+  }, [])
 
   return (
     <main className="w-full h-full min-h-[720px] flex p-6 gap-6">
@@ -114,12 +148,20 @@ export default function App() {
               토픽을 작성해보세요.
             </p>
           </div>
-          <div className="grid grid-cols-2 gap-6">
-            <SkeletonNewTopic />
-            <SkeletonNewTopic />
-            <SkeletonNewTopic />
-            <SkeletonNewTopic />
-          </div>
+
+          {topics.length > 0 ? (
+            <div className="min-h-120 grid grid-cols-2 gap-6">
+              {topics.length > 0
+                ? topics.map((topic: Topic) => <NewTopicCard />)
+                : ''}
+            </div>
+          ) : (
+            <div className="w-full min-h-120 flex items-center justify-center">
+              <p className="text-muted-foreground/50">
+                조회 가능한 토픽이 없습니다.
+              </p>
+            </div>
+          )}
         </div>
       </section>
     </main>
