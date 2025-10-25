@@ -151,9 +151,15 @@ export default function App() {
 
           {topics.length > 0 ? (
             <div className="min-h-120 grid grid-cols-2 gap-6">
-              {topics.length > 0
-                ? topics.map((topic: Topic) => <NewTopicCard />)
-                : ''}
+              {topics
+                .sort(
+                  (a, b) =>
+                    new Date(b.created_at).getTime() -
+                    new Date(a.created_at).getTime()
+                )
+                .map((topic: Topic, index) => (
+                  <NewTopicCard props={topic} key={index} />
+                ))}
             </div>
           ) : (
             <div className="w-full min-h-120 flex items-center justify-center">
