@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router'
+import { useNavigate, useSearchParams } from 'react-router'
 
 import { toast } from 'sonner'
 import { CircleSmall, NotebookPen, PencilLine } from 'lucide-react'
@@ -17,15 +17,19 @@ import type { Topic } from '@/types/topic.type'
 export default function App() {
   const user = useAuthStore((state) => state.user)
   const navigate = useNavigate()
+  const [searchParmas, setSearchParmas] = useSearchParams()
+  const category = searchParmas.get('category') || ''
 
   const [topics, setTopics] = useState<Topic[]>([])
   // 발행된 토픽 조회
   const fetchTopics = async () => {
     try {
-      const { data: topics, error } = await supabase
-        .from('topic')
-        .select('*')
-        .eq('status', 'publish')
+      const query = supabase.from('topic').select('*').eq('status', 'publish')
+
+      if (category && category.trim() !== '') {
+        query.eq('category', category)
+      }
+      const { data: topics, error } = await query
 
       if (error) {
         toast.error(error.message)
@@ -73,9 +77,19 @@ export default function App() {
     }
   }
 
+  const handleCategoryChange = (value: string) => {
+    if (value === category) return // 선택된 항목 재선택시 무시
+
+    if (value === '') {
+      setSearchParmas({})
+    } else {
+      setSearchParmas({ category: value })
+    }
+  }
+
   useEffect(() => {
     fetchTopics()
-  }, [])
+  }, [category])
 
   return (
     <main className="w-full h-full min-h-[720px] flex p-6 gap-6">
@@ -102,7 +116,7 @@ export default function App() {
         </AppDreaftsDialog>
       </div>
       {/* 카테고리 사이드바 */}
-      <AppSidebar />
+      <AppSidebar category={category} setCategory={handleCategoryChange} />
       {/* 토픽 컨텐츠 */}
       <section className="flex-1 flex flex-col gap-12">
         {/* Hot 토픽 */}
