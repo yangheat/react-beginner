@@ -10,13 +10,16 @@ import type { Block } from '@blocknote/core'
 import '@blocknote/mantine/style.css'
 // Include the included Inter font
 import '@blocknote/core/fonts/inter.css'
+import { readonly } from 'zod'
 
 interface Props {
   props?: Block[]
-  setContent: (content: Block[]) => void
+  setContent?: (content: Block[]) => void
+  readonly?: boolean
 }
 
-export function AppEditor({ props, setContent }: Props) {
+export function AppEditor({ props, setContent, readonly }: Props) {
+  console.log('readonly', readonly)
   const locale = ko
   // Create a new editor instance
   const editor = useCreateBlockNote({
@@ -43,7 +46,12 @@ export function AppEditor({ props, setContent }: Props) {
   return (
     <BlockNoteView
       editor={editor}
-      onChange={() => setContent(editor.document)}
+      editable={!readonly}
+      onChange={() => {
+        // if (!readonly) {
+        setContent?.(editor.document)
+        // }
+      }}
     />
   )
 }
