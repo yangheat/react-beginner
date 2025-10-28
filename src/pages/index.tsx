@@ -116,9 +116,11 @@ export default function App() {
         </AppDreaftsDialog>
       </div>
       {/* 카테고리 사이드바 */}
-      <AppSidebar category={category} setCategory={handleCategoryChange} />
+      <div className="hidden lg:block lg:min-w-60 lg:w-60 lg:h-full">
+        <AppSidebar category={category} setCategory={handleCategoryChange} />
+      </div>
       {/* 토픽 컨텐츠 */}
-      <section className="flex-1 flex flex-col gap-12">
+      <section className="w-full lg:w-[calc(100%-264px)] flex flex-col gap-12">
         {/* Hot 토픽 */}
         <div className="w-full flex flex-col gap-6">
           <div className="flex flex-col gap1">
@@ -137,7 +139,7 @@ export default function App() {
               얻어보세요.
             </p>
           </div>
-          <div className="grid grid-cols-4 gap-6">
+          <div className="w-full flex items-center gap-6 overflow-auto">
             <SkeletonHotTopic />
             <SkeletonHotTopic />
             <SkeletonHotTopic />
@@ -164,7 +166,7 @@ export default function App() {
           </div>
 
           {topics.length > 0 ? (
-            <div className="min-h-120 grid grid-cols-2 gap-6">
+            <div className="flex flex-col min-h-120 md:grid md:grid-cols-2 gap-6">
               {topics
                 .sort(
                   (a, b) =>

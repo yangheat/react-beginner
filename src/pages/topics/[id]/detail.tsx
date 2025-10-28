@@ -78,7 +78,7 @@ export function TopicDetail() {
   return (
     <main className="w-full h-full min-h-[720px] flex flex-col">
       <div
-        className="relative w-full h-100 bg-cover bg-[50%_35%] bg-accent"
+        className="relative w-full h-60 md:h-100 bg-cover bg-[50%_35%] bg-accent"
         style={{ backgroundImage: `url(${thumbnail})` }}
       >
         {/* 뒤로가기 */}
@@ -128,7 +128,7 @@ export function TopicDetail() {
       </div>
       <section className="relative w-full flex flex-col items-center -mt-40">
         <span className="mb-4">{category}</span>
-        <h1 className="scroll-m-20 text-center font-extrabold tracking-tight text-4xl">
+        <h1 className="scroll-m-20 text-center font-extrabold tracking-tight text-xl sm:text-2xl md:text-4xl">
           {title}
         </h1>
         <Separator className="!w-6 my-6 bg-foreground" />
