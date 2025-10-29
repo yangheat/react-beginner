@@ -173,8 +173,8 @@ export default function App() {
                     new Date(b.created_at).getTime() -
                     new Date(a.created_at).getTime()
                 )
-                .map((topic: Topic, index) => (
-                  <NewTopicCard props={topic} key={index} />
+                .map((topic: Topic) => (
+                  <NewTopicCard props={topic} key={topic.id} />
                 ))}
             </div>
           ) : (

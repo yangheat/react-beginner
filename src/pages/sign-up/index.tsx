@@ -83,6 +83,7 @@ export default function Signup() {
           .insert([
             {
               id: user.id,
+              email: values.email,
               service_agreed: serviceAgreed,
               privacy_agreed: privacyAgreed,
               marketing_agreed: marketingAgreed

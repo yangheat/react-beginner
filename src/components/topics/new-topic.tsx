@@ -5,6 +5,9 @@ import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import 'dayjs/locale/ko'
 import { useNavigate } from 'react-router'
+import supabase from '@/lib/supabase'
+import { toast } from 'sonner'
+import { useEffect, useState } from 'react'
 
 dayjs.extend(relativeTime)
 dayjs.locale('ko') // 한국어로 설정
@@ -44,8 +47,40 @@ function extractTextFromContent(content: string | any[], maxChars = 200) {
   }
 }
 
+async function findUserById(id: string) {
+  try {
+    let { data: user, error } = await supabase
+      .from('user')
+      .select('*')
+      .eq('id', id)
+
+    if (error) {
+      toast.error(error.message)
+      return ''
+    }
+
+    if (user && user.length > 0) {
+      return user[0].email.split('@')[0] + '님'
+    } else {
+      return '알 수 없는 사용자'
+    }
+  } catch (error) {
+    console.error(error)
+    throw error
+  }
+}
+
 export function NewTopicCard({ props }: Props) {
   const navigate = useNavigate()
+  const [email, setEmail] = useState<string>('')
+
+  useEffect(() => {
+    async function fetchAuthEmail() {
+      const email = await findUserById(props.author)
+      setEmail(email)
+    }
+    fetchAuthEmail()
+  }, [])
 
   return (
     <Card
@@ -72,9 +107,8 @@ export function NewTopicCard({ props }: Props) {
       </div>
       <Separator />
       <div className="w-full flex items-center justify-between">
-        <p>yangheat</p>
-        <p>{dayjs(props.created_at).format('YYYY, MM. DD')}</p>
-        {/* <p>{dayjs(props.created_at).fromNow()})</p> */}
+        <p>{email}</p>
+        <p>{dayjs(props.created_at).format('YYYY. MM. DD')}</p>
       </div>
     </Card>
   )
