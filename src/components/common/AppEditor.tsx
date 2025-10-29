@@ -10,7 +10,6 @@ import type { Block } from '@blocknote/core'
 import '@blocknote/mantine/style.css'
 // Include the included Inter font
 import '@blocknote/core/fonts/inter.css'
-import { readonly } from 'zod'
 
 interface Props {
   props?: Block[]
