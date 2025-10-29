@@ -12,7 +12,7 @@ import { SkeletonHotTopic } from '../components/skeleton'
 import { Button } from '../components/ui'
 import { NewTopicCard } from '@/components/topics'
 
-import type { Topic } from '@/types/topic.type'
+import { TOPIC_STATUS, type Topic } from '@/types/topic.type'
 
 export default function App() {
   const user = useAuthStore((state) => state.user)
@@ -24,7 +24,10 @@ export default function App() {
   // 발행된 토픽 조회
   const fetchTopics = async () => {
     try {
-      const query = supabase.from('topic').select('*').eq('status', 'publish')
+      const query = supabase
+        .from('topic')
+        .select('*')
+        .eq('status', TOPIC_STATUS.PUBLISH)
 
       if (category && category.trim() !== '') {
         query.eq('category', category)

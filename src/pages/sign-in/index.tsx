@@ -65,7 +65,8 @@ export default function Signin() {
       options: {
         // 약관동의 확인을 보이게 할지 확인
         queryParams: { access_type: 'offline', prompt: 'consent' },
-        redirectTo: window.location.origin // 로그인 후 돌아올 URL https://your-service-domain.com
+        // 로그인 후 돌아올 URL https://your-service-domain.com
+        redirectTo: `${import.meta.env.VITE_SUPABASE_BASE_URL}/auth/callbacak`
       }
     })
 
