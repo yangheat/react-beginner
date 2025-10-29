@@ -112,7 +112,7 @@ export default function CreateTopic() {
         content: JSON.stringify(content),
         category,
         thumbnail: thumnailUrl,
-        author: user.id
+        author: user?.id
       })
       .eq('id', id)
       .select()
@@ -168,7 +168,7 @@ export default function CreateTopic() {
         content: JSON.stringify(content),
         category,
         thumbnail: thumnailUrl,
-        author: user.id,
+        author: user?.id,
         status: TOPIC_STATUS.PUBLISH
       })
       .eq('id', id)

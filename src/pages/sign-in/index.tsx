@@ -16,6 +16,7 @@ import {
   Input
 } from '@/components/ui'
 import { useAuthStore } from '@/stores'
+import { useEffect } from 'react'
 
 const formSchema = z.object({
   email: z.email({
@@ -38,6 +39,43 @@ export default function Signin() {
 
   const setUser = useAuthStore((state) => state.setUser)
 
+  useEffect(() => {
+    const checkSession = async () => {
+      const {
+        data: { session }
+      } = await supabase.auth.getSession()
+
+      if (session?.user) {
+        setUser({
+          id: session.user.id,
+          email: session.user.email as string,
+          role: session.user.role as string
+        })
+
+        navigator('/')
+      }
+    }
+    checkSession()
+  }, [])
+
+  // 소샬 로그인(구글 로그인)
+  const handleGoogleSignIn = async () => {
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        // 약관동의 확인을 보이게 할지 확인
+        queryParams: { access_type: 'offline', prompt: 'consent' },
+        redirectTo: window.location.origin // 로그인 후 돌아올 URL https://your-service-domain.com
+      }
+    })
+
+    if (error) {
+      toast.error(error.message)
+      return
+    }
+  }
+
+  // 일반 로그인
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       const {
@@ -75,7 +113,7 @@ export default function Signin() {
   }
 
   return (
-    <main className="w-full h-full min-h-[720px] flex items-start justify-center p-6 gap-6">
+    <main className="w-full h-full min-h-[720px] flex items-center justify-center p-6 gap-6">
       <div className="w-100 max-w-100 flex flex-col px-6 gap-6">
         <div className="flex flex-col">
           <h4 className="scroll-m-20 text-xl font-semibold traking-tight">
@@ -87,7 +125,11 @@ export default function Signin() {
         </div>
         <div className="grid gap-3">
           {/* 소셜 로그인 */}
-          <Button type="button" variant={'secondary'}>
+          <Button
+            type="button"
+            variant={'secondary'}
+            onClick={handleGoogleSignIn}
+          >
             <img
               src="/assets/icons/social/google.svg"
               alt="@GOOGLE_LOGO"

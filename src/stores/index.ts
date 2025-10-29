@@ -1,3 +1,4 @@
+import supabase from '@/lib/supabase'
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 
@@ -24,9 +25,9 @@ interface User {
 }
 
 interface AuthStore {
-  user: User,
-  setUser: (newUser: User) => void,
-  reset: () => void
+  user: User | null,
+  setUser: (newUser: User | null) => void,
+  reset: () => Promise<void>
 }
 
 export const useAuthStore = create<AuthStore>()(
@@ -36,10 +37,15 @@ export const useAuthStore = create<AuthStore>()(
       email: '',
       role: '',
     },
-    setUser: (newUser: User) => set({ user: newUser }),
-    reset: () => {
-      set({ user: { id: '', email: '', role: '' } })
+    setUser: (newUser: User | null) => set({ user: newUser }),
+    // 로그아웃 (상테 + Supabase 세션 모두 제거)
+    reset: async () => {
+      await supabase.auth.signOut()
+
+      // Zustand 상태 초기화
+      set({ user: null })
       localStorage.removeItem('auth-storage')
     }
-  }), { name: 'auth-storage' })
+  }),
+    { name: 'auth-storage', partialize: (state) => ({ user: state.user }) })  // user만 저장
 )

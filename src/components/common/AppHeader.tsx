@@ -1,12 +1,24 @@
 import { NavLink, useNavigate } from 'react-router'
 import { Separator } from '../ui'
 import { useAuthStore } from '@/stores'
+import { toast } from 'sonner'
 
 function AppHeader() {
   const navigator = useNavigate()
   const user = useAuthStore((state) => state.user)
+  const reset = useAuthStore((state) => state.reset)
 
-  const handleLogout = useAuthStore((state) => state.reset)
+  const handleLogout = async () => {
+    try {
+      await reset() // Zustand + Supabase 모두 로그아웃
+
+      toast.success('로그아웃 되었습니다.')
+      navigator('/sign-in')
+    } catch (error) {
+      console.error(error)
+      toast.error('로그아웃 중 오류가 발생했습니다.')
+    }
+  }
 
   return (
     <header className="fixed top-0 z-10  w-full flex items-center justify-center bg-[#121212]">
@@ -26,7 +38,7 @@ function AppHeader() {
           </div>
         </div>
         {/* 로그인 UI */}
-        {user.email ? (
+        {user ? (
           <div className="flex gap-5">
             <span>{user.email}</span>
             <Separator orientation="vertical" className="!h-4" />
