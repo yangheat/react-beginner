@@ -80,30 +80,35 @@ export default function Signup() {
 
       // 회원가입 성공
       if (user && session) {
-        const { data, error } = await supabase
-          .from('서비스 사용자(유저)')
-          .insert([
-            {
-              id: user.id,
-              email: values.email,
-              service_agreed: serviceAgreed,
-              privacy_agreed: privacyAgreed,
-              marketing_agreed: marketingAgreed
-            }
-          ])
-          .select()
+        // 트리거를 사용한 경우 사용
+        toast.success('회원가입을 완료하였습니다.')
+        navigate('/')
 
-        if (data) {
-          // 성공 메시지 - Toast UI 발생
-          // 로그인 페이지로 리다이렉트
-          toast.success('회원가입을 완료하였습니다.')
-          navigate('/sign-in')
-        }
+        // 트리거를 사용하지 않은 경우 사용
+        // const { data, error } = await supabase
+        //   .from('서비스 사용자(유저)')
+        //   .insert([
+        //     {
+        //       id: user.id,
+        //       email: values.email,
+        //       service_agreed: serviceAgreed,
+        //       privacy_agreed: privacyAgreed,
+        //       marketing_agreed: marketingAgreed
+        //     }
+        //   ])
+        //   .select()
 
-        if (error) {
-          toast.error(error.message)
-          return
-        }
+        // if (data) {
+        //   // 성공 메시지 - Toast UI 발생
+        //   // 로그인 페이지로 리다이렉트
+        //   toast.success('회원가입을 완료하였습니다.')
+        //   navigate('/sign-in')
+        // }
+
+        // if (error) {
+        //   toast.error(error.message)
+        //   return
+        // }
       }
     } catch (error) {
       console.log(error)
