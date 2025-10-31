@@ -28,7 +28,7 @@ const formSchema = z.object({
 })
 
 export default function Signin() {
-  const navigator = useNavigate()
+  const navigate = useNavigate()
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -52,7 +52,7 @@ export default function Signin() {
           role: session.user.role as string
         })
 
-        navigator('/')
+        navigate('/')
       }
     }
     checkSession()
@@ -105,7 +105,7 @@ export default function Signin() {
         })
 
         toast.success('로그인에 성공하였습니다.')
-        navigator('/')
+        navigate('/')
       }
     } catch (error) {
       console.log(error)

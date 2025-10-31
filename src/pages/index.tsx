@@ -59,7 +59,7 @@ export default function App() {
       .from('topic')
       .insert([
         {
-          status: null,
+          status: TOPIC_STATUS.TEMP,
           title: null,
           content: null,
           category: null,

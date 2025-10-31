@@ -4,7 +4,7 @@ import { useAuthStore } from '@/stores'
 import { toast } from 'sonner'
 
 function AppHeader() {
-  const navigator = useNavigate()
+  const navigate = useNavigate()
   const user = useAuthStore((state) => state.user)
   const reset = useAuthStore((state) => state.reset)
 
@@ -13,7 +13,7 @@ function AppHeader() {
       await reset() // Zustand + Supabase 모두 로그아웃
 
       toast.success('로그아웃 되었습니다.')
-      navigator('/sign-in')
+      navigate('/sign-in')
     } catch (error) {
       console.error(error)
       toast.error('로그아웃 중 오류가 발생했습니다.')

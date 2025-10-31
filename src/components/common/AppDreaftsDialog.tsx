@@ -26,7 +26,7 @@ interface Props {
 
 export function AppDreaftsDialog({ children }: Props) {
   const user = useAuthStore((state) => state.user)
-  const navigator = useNavigate()
+  const navigate = useNavigate()
   const [drafts, setDrafts] = useState<Topic[]>([])
 
   const fetchDrafts = async () => {
@@ -78,7 +78,7 @@ export function AppDreaftsDialog({ children }: Props) {
               {drafts.map((draft, index) => (
                 <div
                   className="w-full flex items-center justify-between py-2 px-4 gap-3 rounded-md cursor-pointer bg-card/50"
-                  onClick={() => navigator(`/topics/${draft.id}/create`)}
+                  onClick={() => navigate(`/topics/${draft.id}/create`)}
                 >
                   <div className="flex items-start gap-2">
                     <Badge className="w-5 h-5 mt-[3px] rounded-sm aspect-square text-foreground bg-[#E26F24] hover:bg-[#E26F24]">

@@ -1,10 +1,10 @@
-import { useState } from 'react'
-import supabase from '@/lib/supabase'
+import { useEffect, useState } from 'react'
+import { NavLink, useNavigate } from 'react-router'
 
+import supabase from '@/lib/supabase'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
-import { NavLink, useNavigate } from 'react-router'
 
 import {
   Button,
@@ -20,6 +20,7 @@ import {
 } from '@/components/ui'
 import { ArrowLeft, Asterisk, ChevronRight } from 'lucide-react'
 import { toast } from 'sonner'
+import { useAuthStore } from '@/stores'
 
 const formSchema = z
   .object({
@@ -45,6 +46,7 @@ const formSchema = z
 
 export default function Signup() {
   const navigate = useNavigate()
+  const setUser = useAuthStore((state) => state.setUser)
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: { email: '', password: '', confirmPassword: '' }
@@ -109,8 +111,27 @@ export default function Signup() {
     }
   }
 
+  useEffect(() => {
+    const checkSession = async () => {
+      const {
+        data: { session }
+      } = await supabase.auth.getSession()
+
+      if (session?.user) {
+        setUser({
+          id: session.user.id,
+          email: session.user.email as string,
+          role: session.user.role as string
+        })
+
+        navigate('/')
+      }
+    }
+    checkSession()
+  }, [])
+
   return (
-    <main className="w-full h-full min-h-[720px] flex items-start justify-center p-6 gap-6">
+    <main className="w-full h-full min-h-[720px] flex items-center justify-center p-6 gap-6">
       <div className="w-100 max-w-100 flex flex-col px-6 gap-6">
         <div className="flex flex-col">
           <h4 className="scroll-m-20 text-xl font-semibold traking-tight">

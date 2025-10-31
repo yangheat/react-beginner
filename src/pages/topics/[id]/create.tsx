@@ -112,7 +112,8 @@ export default function CreateTopic() {
         content: JSON.stringify(content),
         category,
         thumbnail: thumnailUrl,
-        author: user?.id
+        author: user?.id,
+        status: TOPIC_STATUS.TEMP
       })
       .eq('id', id)
       .select()
