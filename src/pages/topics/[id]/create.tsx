@@ -71,8 +71,8 @@ export default function CreateTopic() {
     }
   }
 
-  const handleSave = async () => {
-    if (!title && !content && !category && !thumbnail) {
+  const handleSubmitTopic = async (status: TOPIC_STATUS) => {
+    if (!title || !content || !category || !thumbnail) {
       toast.warning('제목, 본문, 카테고리, 썸네일을 기입하세요.')
       return
     }
@@ -113,7 +113,7 @@ export default function CreateTopic() {
         category,
         thumbnail: thumnailUrl,
         author: user?.id,
-        status: TOPIC_STATUS.TEMP
+        status
       })
       .eq('id', id)
       .select()
@@ -124,66 +124,19 @@ export default function CreateTopic() {
     }
 
     if (data) {
-      toast.success('작성 중인 토픽을 저장하였습니다.')
+      toast.success(
+        TOPIC_STATUS.PUBLISH
+          ? '작성 중인 토픽을 발행하였습니다.'
+          : '작성 중인 토픽을 저장하였습니다.'
+      )
     }
   }
 
-  const handlePublish = async () => {
-    if (!title && !content && !category && !thumbnail) {
-      toast.warning('제목, 본문, 카테고리, 썸네일을 기입하세요.')
-      return
-    }
+  const handleSave = () => handleSubmitTopic(TOPIC_STATUS.TEMP)
 
-    // 1. 파일 업로드 시, Supabase의 Storage 즉 bucket 폴더에 이미지를 먼저 업로드 후
-    // 이미지가 저장된 bucket 폴더의 경로 URL 주소를 우리가 관리하고 있는 Topic 테이블 thumbnail 컬럼에 문자열 형태
-    // 즉, string 타입 (DB에서는 Text타입) 으로 저장한다.
-
-    let thumnailUrl: string | null = null
-
-    if (thumbnail && thumbnail instanceof File) {
-      // 썸네일 이미지를 storage에 업로드
-      const fileExt = thumbnail.name.split('.').pop()
-      const fileName = `${nanoid()}.${fileExt}`
-      const filePath = `topics/${fileName}`
-
-      const { error: uploadError } = await supabase.storage
-        .from('files')
-        .upload(filePath, thumbnail)
-
-      if (uploadError) throw uploadError
-
-      // 업로드된 이미지의 Public URL 값 가져오기
-      const { data } = supabase.storage.from('files').getPublicUrl(filePath)
-
-      if (!data) throw new Error('썸네일 Public URL 조회를 실패하였습니다.')
-      thumnailUrl = data.publicUrl
-    } else if (typeof thumbnail === 'string') {
-      // 기존 이미지 유지
-      thumnailUrl = thumbnail
-    }
-
-    const { data, error } = await supabase
-      .from('topic')
-      .update({
-        title,
-        content: JSON.stringify(content),
-        category,
-        thumbnail: thumnailUrl,
-        author: user?.id,
-        status: TOPIC_STATUS.PUBLISH
-      })
-      .eq('id', id)
-      .select()
-
-    if (error) {
-      toast.error(error.message)
-      return
-    }
-
-    if (data) {
-      toast.success('작성 중인 토픽을 발행하였습니다.')
-      navigate('/')
-    }
+  const handlePublish = () => {
+    handleSubmitTopic(TOPIC_STATUS.PUBLISH)
+    navigate('/')
   }
 
   return (
