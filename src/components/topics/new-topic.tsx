@@ -12,10 +12,6 @@ import { useEffect, useState } from 'react'
 dayjs.extend(relativeTime)
 dayjs.locale('ko') // 한국어로 설정
 
-interface Props {
-  props: Topic
-}
-
 function extractTextFromContent(content: string | any[], maxChars = 200) {
   try {
     const parsed = typeof content === 'string' ? JSON.parse(content) : content
@@ -70,13 +66,13 @@ async function findUserById(id: string) {
   }
 }
 
-export function NewTopicCard({ props }: Props) {
+export function NewTopicCard({ topic }: { topic: Topic }) {
   const navigate = useNavigate()
   const [nickName, setNickName] = useState<string>('')
 
   useEffect(() => {
     async function fetchAuthEmail() {
-      const nickName = await findUserById(props.author)
+      const nickName = await findUserById(topic.author)
       setNickName(nickName || '알 수 없는 사용자')
     }
     fetchAuthEmail()
@@ -85,22 +81,22 @@ export function NewTopicCard({ props }: Props) {
   return (
     <Card
       className="w-full h-fit p-4 gap-4 cursor-pointer"
-      onClick={() => navigate(`topics/${props.id}/detail`)}
+      onClick={() => navigate(`topics/${topic.id}/detail`)}
     >
       <div className="flex items-start gap-4">
         <div className=" flex-1 flex flex-col gap-4">
           {/* 쌈네일과 제목 */}
           <h3 className="h-16 text-base font-semibold tracking-tight line-clamp-2">
             <CaseSensitive size={16} className="text-muted-foreground" />
-            <p>{props.title}</p>
+            <p>{topic.title}</p>
           </h3>
           {/* 본문 */}
           <p className="line-clamp-3 text-muted-foreground">
-            {extractTextFromContent(props.content)}
+            {extractTextFromContent(topic.content)}
           </p>
         </div>
         <img
-          src={props.thumbnail}
+          src={topic.thumbnail}
           alt="@THUMBNAIL"
           className="w-[140px] h-[140px] aspect-square rounded-lg object-cover"
         />
@@ -108,7 +104,7 @@ export function NewTopicCard({ props }: Props) {
       <Separator />
       <div className="w-full flex items-center justify-between">
         <p>{nickName}</p>
-        <p>{dayjs(props.created_at).format('YYYY. MM. DD')}</p>
+        <p>{dayjs(topic.created_at).format('YYYY. MM. DD')}</p>
       </div>
     </Card>
   )

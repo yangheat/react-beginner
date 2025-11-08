@@ -177,7 +177,7 @@ export default function App() {
                     new Date(a.created_at).getTime()
                 )
                 .map((topic: Topic) => (
-                  <NewTopicCard props={topic} key={topic.id} />
+                  <NewTopicCard topic={topic} key={topic.id} />
                 ))}
             </div>
           ) : (
