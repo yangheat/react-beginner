@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { Suspense, use, useMemo } from 'react'
 import { useNavigate, useSearchParams } from 'react-router'
 
 import { toast } from 'sonner'
@@ -8,11 +8,67 @@ import supabase from '@/lib/supabase'
 import { useAuthStore } from '@/stores'
 
 import { AppDreaftsDialog, AppSidebar } from '../components/common'
-import { SkeletonHotTopic } from '../components/skeleton'
+import { SkeletonHotTopic, SkeletonNewTopic } from '../components/skeleton'
 import { Button } from '../components/ui'
 import { NewTopicCard } from '@/components/topics'
 
 import { TOPIC_STATUS, type Topic } from '@/types/topic.type'
+
+// 발행된 토픽 조회
+const fetchTopics = async (category: string): Promise<Topic[]> => {
+  const query = supabase
+    .from('topic')
+    .select('*')
+    .eq('status', TOPIC_STATUS.PUBLISH)
+
+  if (category && category.trim() !== '') {
+    query.eq('category', category)
+  }
+  const { data: topics, error } = await query
+
+  if (error) {
+    toast.error(error.message)
+    throw error
+  }
+
+  return topics || []
+}
+
+function TopicList({ promise }: { promise: Promise<Topic[]> }) {
+  const topics = use(promise)
+
+  if (!topics.length) {
+    return (
+      <div className="w-full min-h-120 flex items-center justify-center">
+        <p className="text-muted-foreground/50">조회 가능한 토픽이 없습니다.</p>
+      </div>
+    )
+  }
+
+  const sorted = [...topics].sort(
+    (a, b) =>
+      new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+  )
+
+  return (
+    <div className="flex flex-col min-h-120 md:grid md:grid-cols-2 gap-6">
+      {sorted.map((topic) => (
+        <NewTopicCard topic={topic} key={topic.id} />
+      ))}
+    </div>
+  )
+}
+
+function SkeletonNewTopics() {
+  return (
+    <div className="flex flex-col min-h-120 md:grid md:grid-cols-2 gap-6">
+      <SkeletonNewTopic />
+      <SkeletonNewTopic />
+      <SkeletonNewTopic />
+      <SkeletonNewTopic />
+    </div>
+  )
+}
 
 export default function App() {
   const user = useAuthStore((state) => state.user)
@@ -20,33 +76,7 @@ export default function App() {
   const [searchParmas, setSearchParmas] = useSearchParams()
   const category = searchParmas.get('category') || ''
 
-  const [topics, setTopics] = useState<Topic[]>([])
-  // 발행된 토픽 조회
-  const fetchTopics = async () => {
-    try {
-      const query = supabase
-        .from('topic')
-        .select('*')
-        .eq('status', TOPIC_STATUS.PUBLISH)
-
-      if (category && category.trim() !== '') {
-        query.eq('category', category)
-      }
-      const { data: topics, error } = await query
-
-      if (error) {
-        toast.error(error.message)
-        return
-      }
-
-      if (topics) {
-        setTopics(topics)
-      }
-    } catch (error) {
-      console.log(error)
-      throw error
-    }
-  }
+  const topicsPromise = useMemo(() => fetchTopics(category), [category])
 
   // 나만의 토픽 생성 버튼 클릭
   const moveTopicCreatePage = async () => {
@@ -89,10 +119,6 @@ export default function App() {
       setSearchParmas({ category: value })
     }
   }
-
-  useEffect(() => {
-    fetchTopics()
-  }, [category])
 
   return (
     <main className="w-full h-full min-h-[720px] flex p-6 gap-6">
@@ -167,26 +193,9 @@ export default function App() {
               토픽을 작성해보세요.
             </p>
           </div>
-
-          {topics.length > 0 ? (
-            <div className="flex flex-col min-h-120 md:grid md:grid-cols-2 gap-6">
-              {topics
-                .sort(
-                  (a, b) =>
-                    new Date(b.created_at).getTime() -
-                    new Date(a.created_at).getTime()
-                )
-                .map((topic: Topic) => (
-                  <NewTopicCard topic={topic} key={topic.id} />
-                ))}
-            </div>
-          ) : (
-            <div className="w-full min-h-120 flex items-center justify-center">
-              <p className="text-muted-foreground/50">
-                조회 가능한 토픽이 없습니다.
-              </p>
-            </div>
-          )}
+          <Suspense fallback={<SkeletonNewTopics />}>
+            <TopicList promise={topicsPromise} />
+          </Suspense>
         </div>
       </section>
     </main>
