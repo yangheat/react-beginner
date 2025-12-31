@@ -1,10 +1,14 @@
+import { useEffect } from 'react'
 import { NavLink, useNavigate } from 'react-router'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { toast } from 'sonner'
 
+import { useAuthStore } from '@/stores'
+import { routes } from '@/shared/config/routes.config'
 import supabase from '@/lib/supabase'
+
 import {
   Button,
   Form,
@@ -15,8 +19,6 @@ import {
   FormMessage,
   Input
 } from '@/components/ui'
-import { useAuthStore } from '@/stores'
-import { useEffect } from 'react'
 
 const formSchema = z.object({
   email: z.email({
@@ -52,7 +54,7 @@ export default function Signin() {
           role: session.user.role as string
         })
 
-        navigate('/')
+        navigate(routes.home)
       }
     }
     checkSession()
@@ -105,7 +107,7 @@ export default function Signin() {
         })
 
         toast.success('로그인에 성공하였습니다.')
-        navigate('/')
+        navigate(routes.home)
       }
     } catch (error) {
       console.log(error)
@@ -192,7 +194,7 @@ export default function Signin() {
                 </Button>
                 <div className="text-center">
                   계정이 없으신가요?
-                  <NavLink to={'/sign-up'} className="underline ml-1">
+                  <NavLink to={routes.signUp} className="underline ml-1">
                     회원가입
                   </NavLink>
                 </div>

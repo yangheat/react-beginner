@@ -1,9 +1,13 @@
 import { useEffect, useState, type ReactNode } from 'react'
+import { useNavigate } from 'react-router'
 import dayjs from 'dayjs'
 import { toast } from 'sonner'
 
 import supabase from '@/lib/supabase'
 import { useAuthStore } from '@/stores'
+import { routes } from '@/shared/config/routes.config'
+import { TOPIC_STATUS, type Topic } from '@/types/topic.type'
+
 import {
   Badge,
   Button,
@@ -17,8 +21,6 @@ import {
   DialogTrigger,
   Separator
 } from '@/components/ui'
-import { TOPIC_STATUS, type Topic } from '@/types/topic.type'
-import { useNavigate } from 'react-router'
 
 interface Props {
   children: ReactNode
@@ -78,7 +80,7 @@ export function AppDreaftsDialog({ children }: Props) {
               {drafts.map((draft, index) => (
                 <div
                   className="w-full flex items-center justify-between py-2 px-4 gap-3 rounded-md cursor-pointer bg-card/50"
-                  onClick={() => navigate(`/topics/${draft.id}/create`)}
+                  onClick={() => navigate(routes.topic.create(draft.id))}
                 >
                   <div className="flex items-start gap-2">
                     <Badge className="w-5 h-5 mt-[3px] rounded-sm aspect-square text-foreground bg-[#E26F24] hover:bg-[#E26F24]">

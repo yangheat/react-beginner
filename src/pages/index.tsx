@@ -1,18 +1,17 @@
 import { Suspense, use, useMemo } from 'react'
 import { useNavigate, useSearchParams } from 'react-router'
-
 import { toast } from 'sonner'
 import { CircleSmall, NotebookPen, PencilLine } from 'lucide-react'
 
 import supabase from '@/lib/supabase'
 import { useAuthStore } from '@/stores'
+import { routes } from '@/shared/config/routes.config'
+import { TOPIC_STATUS, type Topic } from '@/types/topic.type'
 
 import { AppDreaftsDialog, AppSidebar } from '../components/common'
 import { SkeletonHotTopic, SkeletonNewTopic } from '../components/skeleton'
 import { Button } from '../components/ui'
 import { NewTopicCard } from '@/components/topics'
-
-import { TOPIC_STATUS, type Topic } from '@/types/topic.type'
 
 // 발행된 토픽 조회
 const fetchTopics = async (category: string): Promise<Topic[]> => {
@@ -106,7 +105,7 @@ export default function App() {
 
     if (data) {
       toast.success('토픽을 생성하였습니다.')
-      navigate(`/topics/${data[0].id}/create`)
+      navigate(routes.topic.create(data[0].id))
     }
   }
 

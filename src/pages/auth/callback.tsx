@@ -1,7 +1,9 @@
 import { useEffect } from 'react'
 import { useNavigate } from 'react-router'
-import supabase from '@/lib/supabase'
 import { toast } from 'sonner'
+
+import supabase from '@/lib/supabase'
+import { routes } from '@/shared/config/routes.config'
 
 export default function AuthCallback() {
   const navigate = useNavigate()
@@ -23,7 +25,7 @@ export default function AuthCallback() {
         toast.error('로그인 처리 중 오류가 발생했습니다. ')
 
         // 로그인 페이지로 이동
-        navigate('/sign-in')
+        navigate(routes.signIn)
         return
       }
 
@@ -31,7 +33,7 @@ export default function AuthCallback() {
 
       // 메인 페이지로 이동
       toast.success('로그인을 성공하였습니다.')
-      navigate('/')
+      navigate(routes.home)
     }
 
     // 이 useEffect는 OAuth 리디렉션 후 실행되며,

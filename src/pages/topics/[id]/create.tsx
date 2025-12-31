@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router'
-
 import {
   ArrowLeft,
   Asterisk,
@@ -14,6 +13,9 @@ import { nanoid } from 'nanoid'
 import supabase from '@/lib/supabase'
 import { useAuthStore } from '@/stores'
 import type { Block } from '@blocknote/core'
+import { routes } from '@/shared/config/routes.config'
+import { TOPIC_CATEGORY } from '@/constants/category.constant'
+import { TOPIC_STATUS } from '@/types/topic.type'
 
 import { AppEditor, AppFileUpload } from '@/components/common'
 import {
@@ -28,8 +30,6 @@ import {
   SelectTrigger,
   SelectValue
 } from '@/components/ui'
-import { TOPIC_CATEGORY } from '@/constants/category.constant'
-import { TOPIC_STATUS } from '@/types/topic.type'
 
 export default function CreateTopic() {
   const user = useAuthStore((state) => state.user)
@@ -136,13 +136,17 @@ export default function CreateTopic() {
 
   const handlePublish = () => {
     handleSubmitTopic(TOPIC_STATUS.PUBLISH)
-    navigate('/')
+    navigate(routes.home)
   }
 
   return (
     <main className="w-full h-full min-h-[1024px] flex gap-6 p-6">
       <div className="fixed right-1/2 bottom-10 ranslage-x-1/2 z-20 flex items-center gap-2">
-        <Button variant={'outline'} size={'icon'} onClick={() => navigate('/')}>
+        <Button
+          variant={'outline'}
+          size={'icon'}
+          onClick={() => navigate(routes.home)}
+        >
           <ArrowLeft />
         </Button>
         <Button

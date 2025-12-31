@@ -1,10 +1,14 @@
 import { useEffect, useState } from 'react'
 import { NavLink, useNavigate } from 'react-router'
-
-import supabase from '@/lib/supabase'
-import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { ArrowLeft, Asterisk, ChevronRight } from 'lucide-react'
+import { toast } from 'sonner'
+
+import supabase from '@/lib/supabase'
+import { useAuthStore } from '@/stores'
+import { routes } from '@/shared/config/routes.config'
 
 import {
   Button,
@@ -18,9 +22,6 @@ import {
   Input,
   Label
 } from '@/components/ui'
-import { ArrowLeft, Asterisk, ChevronRight } from 'lucide-react'
-import { toast } from 'sonner'
-import { useAuthStore } from '@/stores'
 
 const formSchema = z
   .object({
@@ -82,33 +83,7 @@ export default function Signup() {
       if (user && session) {
         // 트리거를 사용한 경우 사용
         toast.success('회원가입을 완료하였습니다.')
-        navigate('/')
-
-        // 트리거를 사용하지 않은 경우 사용
-        // const { data, error } = await supabase
-        //   .from('서비스 사용자(유저)')
-        //   .insert([
-        //     {
-        //       id: user.id,
-        //       email: values.email,
-        //       service_agreed: serviceAgreed,
-        //       privacy_agreed: privacyAgreed,
-        //       marketing_agreed: marketingAgreed
-        //     }
-        //   ])
-        //   .select()
-
-        // if (data) {
-        //   // 성공 메시지 - Toast UI 발생
-        //   // 로그인 페이지로 리다이렉트
-        //   toast.success('회원가입을 완료하였습니다.')
-        //   navigate('/sign-in')
-        // }
-
-        // if (error) {
-        //   toast.error(error.message)
-        //   return
-        // }
+        navigate(routes.home)
       }
     } catch (error) {
       console.log(error)
@@ -129,7 +104,7 @@ export default function Signup() {
           role: session.user.role as string
         })
 
-        navigate('/')
+        navigate(routes.home)
       }
     }
     checkSession()
@@ -283,7 +258,7 @@ export default function Signup() {
                 </div>
                 <div className="text-center">
                   이미 계정이 있으신가요?
-                  <NavLink to={'/sign-in'} className="underline">
+                  <NavLink to={routes.signIn} className="underline">
                     로그인
                   </NavLink>
                 </div>

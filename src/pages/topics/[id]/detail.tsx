@@ -1,3 +1,12 @@
+import { useEffect, useState } from 'react'
+import { useNavigate, useParams } from 'react-router'
+import { ArrowLeft, Trash2 } from 'lucide-react'
+import { toast } from 'sonner'
+
+import { useAuthStore } from '@/stores'
+import supabase from '@/lib/supabase'
+import { routes } from '@/shared/config/routes.config'
+
 import { AppEditor } from '@/components/common'
 import {
   AlertDialog,
@@ -12,12 +21,6 @@ import {
   Button,
   Separator
 } from '@/components/ui'
-import supabase from '@/lib/supabase'
-import { useAuthStore } from '@/stores'
-import { ArrowLeft, Trash2 } from 'lucide-react'
-import { useEffect, useState } from 'react'
-import { useNavigate, useParams } from 'react-router'
-import { toast } from 'sonner'
 
 export function TopicDetail() {
   const navigate = useNavigate()
@@ -64,7 +67,7 @@ export function TopicDetail() {
         return
       }
       toast.success('토픽을 삭제하였습니다.')
-      navigate('/')
+      navigate(routes.home)
     } catch (error) {
       console.error(error)
       throw error
@@ -83,7 +86,11 @@ export function TopicDetail() {
       >
         {/* 뒤로가기 */}
         <div className="absolute top-6 left-6 z-10 flex items-center gap-2">
-          <Button variant={'outline'} size="icon" onClick={() => navigate('/')}>
+          <Button
+            variant={'outline'}
+            size="icon"
+            onClick={() => navigate(routes.home)}
+          >
             <ArrowLeft />
           </Button>
           {/* 토픽을 작성한 사람의 user_id와 로그인한 사람의 user_id가 같은 경우에만 보이도록 한다. */}

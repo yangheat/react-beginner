@@ -1,7 +1,10 @@
 import { NavLink, useNavigate } from 'react-router'
-import { Separator } from '../ui'
-import { useAuthStore } from '@/stores'
 import { toast } from 'sonner'
+
+import { useAuthStore } from '@/stores'
+import { routes } from '@/shared/config/routes.config'
+
+import { Separator } from '../ui'
 
 function AppHeader() {
   const navigate = useNavigate()
@@ -13,7 +16,7 @@ function AppHeader() {
       await reset() // Zustand + Supabase 모두 로그아웃
 
       toast.success('로그아웃 되었습니다.')
-      navigate('/sign-in')
+      navigate(routes.signIn)
     } catch (error) {
       console.error(error)
       toast.error('로그아웃 중 오류가 발생했습니다.')
@@ -31,11 +34,11 @@ function AppHeader() {
             className="w-6 h-6 cursor-pointer"
           />
           <div className="flex items-center gap-5">
-            <NavLink to={'/'} className="font-semibold">
+            <NavLink to={routes.home} className="font-semibold">
               토픽 인사이트
             </NavLink>
             <Separator orientation="vertical" className="!h-4" />
-            <NavLink to={'/portfolio'} className="font-semibold">
+            <NavLink to={routes.portfolio} className="font-semibold">
               포트폴리오
             </NavLink>
           </div>
