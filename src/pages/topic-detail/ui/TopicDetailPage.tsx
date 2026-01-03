@@ -22,7 +22,7 @@ import {
   Separator
 } from '@/components/ui'
 
-export function TopicDetail() {
+export function TopicDetailPage() {
   const navigate = useNavigate()
   const { id } = useParams()
   const user = useAuthStore((state) => state.user)

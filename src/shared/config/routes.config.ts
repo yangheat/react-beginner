@@ -5,7 +5,7 @@ export const routes = {
   authCallback: '/auth/callback',
   portfolio: '/portfolio',
   topic: {
-    create: (id: number | string) => `/topics/${id}/create`,
-    detail: (id: number | string) => `/topics/${id}/detail`,
+    create: (id: number | string) => `/topic/${id}/create`,
+    detail: (id: number | string) => `/topic/${id}/detail`,
   }
 }

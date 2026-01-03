@@ -1,13 +1,17 @@
+import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router'
+import dayjs from 'dayjs'
+import 'dayjs/locale/ko'
+import relativeTime from 'dayjs/plugin/relativeTime'
+import { toast } from 'sonner'
+
 import type { Topic } from '@/types/topic.type'
+
 import { Card, Separator } from '../ui'
 import { CaseSensitive } from 'lucide-react'
-import dayjs from 'dayjs'
-import relativeTime from 'dayjs/plugin/relativeTime'
-import 'dayjs/locale/ko'
-import { useNavigate } from 'react-router'
+
 import supabase from '@/lib/supabase'
-import { toast } from 'sonner'
-import { useEffect, useState } from 'react'
+import { routes } from '@/shared/config/routes.config'
 
 dayjs.extend(relativeTime)
 dayjs.locale('ko') // 한국어로 설정
@@ -81,7 +85,7 @@ export function NewTopicCard({ topic }: { topic: Topic }) {
   return (
     <Card
       className="w-full h-fit p-4 gap-4 cursor-pointer"
-      onClick={() => navigate(`topics/${topic.id}/detail`)}
+      onClick={() => navigate(routes.topic.detail(topic.id))}
     >
       <div className="flex items-start gap-4">
         <div className=" flex-1 flex flex-col gap-4">

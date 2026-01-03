@@ -31,7 +31,7 @@ import {
   SelectValue
 } from '@/components/ui'
 
-export default function CreateTopic() {
+export function TopicCreatePage() {
   const user = useAuthStore((state) => state.user)
   const { id } = useParams()
   const navigate = useNavigate()
