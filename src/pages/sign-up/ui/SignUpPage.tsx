@@ -1,34 +1,11 @@
-import { useEffect } from 'react'
-import { useNavigate } from 'react-router'
-
-import supabase from '@/lib/supabase'
-import { useAuthStore } from '@/stores'
-import { routes } from '@/shared/config/routes.config'
-
-import { SignUpForm } from '@/features/auth/ui'
+import { SignUpForm, useCheckSession } from '@/features/auth'
 
 export function SignUpPage() {
-  const navigate = useNavigate()
-  const setUser = useAuthStore((state) => state.setUser)
+  const { isChecking } = useCheckSession()
 
-  useEffect(() => {
-    const checkSession = async () => {
-      const {
-        data: { session }
-      } = await supabase.auth.getSession()
-
-      if (session?.user) {
-        setUser({
-          id: session.user.id,
-          email: session.user.email as string,
-          role: session.user.role as string
-        })
-
-        navigate(routes.home)
-      }
-    }
-    checkSession()
-  }, [])
+  if (isChecking) {
+    return null
+  }
 
   return (
     <main className="w-full h-full min-h-[720px] flex items-center justify-center p-6 gap-6">

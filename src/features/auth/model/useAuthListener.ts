@@ -1,8 +1,9 @@
-import supabase from "@/lib/supabase";
-import { useAuthStore } from "@/stores";
-import { useEffect } from "react";
+import { useEffect } from 'react'
 
-export default function useAuthListener() {
+import supabase from '@/lib/supabase'
+import { useAuthStore } from '@/entities/user/model/auth-store'
+
+export function useAuthListener() {
   const setUser = useAuthStore((state) => state.setUser)
 
   useEffect(() => {
@@ -19,6 +20,7 @@ export default function useAuthListener() {
         })
       }
     }
+
     checkSession()
 
     // 실시간 상태 변화 감지
@@ -37,5 +39,5 @@ export default function useAuthListener() {
     return () => {
       listener.subscription.unsubscribe()
     }
-  }, [])
+  }, [setUser])
 }

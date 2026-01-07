@@ -4,7 +4,7 @@ import dayjs from 'dayjs'
 import { toast } from 'sonner'
 
 import supabase from '@/lib/supabase'
-import { useAuthStore } from '@/stores'
+import { useAuthStore } from '@/entities/user/model/auth-store'
 import { routes } from '@/shared/config/routes.config'
 import { TOPIC_STATUS, type Topic } from '@/types/topic.type'
 

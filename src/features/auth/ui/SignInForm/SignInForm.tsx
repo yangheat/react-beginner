@@ -1,4 +1,12 @@
 import { NavLink, useNavigate } from 'react-router'
+import { useForm } from 'react-hook-form'
+
+import { toast } from 'sonner'
+import type z from 'zod'
+import { zodResolver } from '@hookform/resolvers/zod'
+
+import { useAuthStore } from '@/entities/user/model/auth-store'
+import { routes } from '@/shared/config/routes.config'
 import {
   Button,
   Form,
@@ -10,19 +18,13 @@ import {
   Input
 } from '@/components/ui'
 
-import { routes } from '@/shared/config/routes.config'
-import { useForm } from 'react-hook-form'
-import type z from 'zod'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useAuthStore } from '@/stores'
 import { login } from '../../api/login'
-import { toast } from 'sonner'
-import { SignInData } from '../../model/signIn-schema'
+import { signInSchema } from '../../model/signIn-schema'
 
 export function SignInForm() {
   const navigate = useNavigate()
-  const form = useForm<z.infer<typeof SignInData>>({
-    resolver: zodResolver(SignInData),
+  const form = useForm<z.infer<typeof signInSchema>>({
+    resolver: zodResolver(signInSchema),
     defaultValues: {
       email: '',
       password: ''
@@ -30,7 +32,7 @@ export function SignInForm() {
   })
   const setUser = useAuthStore((state) => state.setUser)
 
-  const onSubmit = async (values: z.infer<typeof SignInData>) => {
+  const onSubmit = async (values: z.infer<typeof signInSchema>) => {
     // const { user, session } = await login(values)
     const result = await login(values)
 

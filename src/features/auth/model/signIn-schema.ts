@@ -1,4 +1,4 @@
-import { email, password } from "@/shared/config/zod.config";
-import z from "zod";
+import { z } from 'zod'
+import { email, password } from '@/shared/config/zod.config'
 
-export const SignInData = z.object({ email, password })
+export const signInSchema = z.object({ email, password })

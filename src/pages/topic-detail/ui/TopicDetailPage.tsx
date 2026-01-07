@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router'
+
 import { ArrowLeft, Trash2 } from 'lucide-react'
 import { toast } from 'sonner'
 
-import { useAuthStore } from '@/stores'
-import supabase from '@/lib/supabase'
+import { useAuthStore } from '@/entities/user/model/auth-store'
 import { routes } from '@/shared/config/routes.config'
-
+import supabase from '@/lib/supabase'
 import { AppEditor } from '@/components/common'
 import {
   AlertDialog,

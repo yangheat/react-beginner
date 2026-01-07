@@ -1,35 +1,11 @@
-import { useEffect } from 'react'
-import { useNavigate } from 'react-router'
-
-import { useAuthStore } from '@/stores'
-import { routes } from '@/shared/config/routes.config'
-import supabase from '@/lib/supabase'
-import GoogleSignInButton from '@/features/auth/ui/GoogleSignInButton/GoogleSignInButton'
-import { SignInForm } from '@/features/auth/ui/SignInForm/SignInForm'
+import { GoogleSignInButton, SignInForm, useCheckSession } from '@/features/auth'
 
 export function SignInPage() {
-  const navigate = useNavigate()
+  const { isChecking } = useCheckSession()
 
-  const setUser = useAuthStore((state) => state.setUser)
-
-  useEffect(() => {
-    const checkSession = async () => {
-      const {
-        data: { session }
-      } = await supabase.auth.getSession()
-
-      if (session?.user) {
-        setUser({
-          id: session.user.id,
-          email: session.user.email as string,
-          role: session.user.role as string
-        })
-
-        navigate(routes.home)
-      }
-    }
-    checkSession()
-  }, [])
+  if (isChecking) {
+    return null
+  }
 
   return (
     <main className="w-full h-full min-h-[720px] flex items-center justify-center p-6 gap-6">

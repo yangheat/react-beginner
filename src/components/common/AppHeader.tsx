@@ -1,7 +1,7 @@
 import { NavLink, useNavigate } from 'react-router'
 import { toast } from 'sonner'
 
-import { useAuthStore } from '@/stores'
+import { useAuthStore } from '@/entities/user/model/auth-store'
 import { routes } from '@/shared/config/routes.config'
 
 import { Separator } from '../ui'

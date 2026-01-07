@@ -11,7 +11,7 @@ import { toast } from 'sonner'
 import { nanoid } from 'nanoid'
 
 import supabase from '@/lib/supabase'
-import { useAuthStore } from '@/stores'
+import { useAuthStore } from '@/entities/user/model/auth-store'
 import type { Block } from '@blocknote/core'
 import { routes } from '@/shared/config/routes.config'
 import { TOPIC_CATEGORY } from '@/constants/category.constant'
@@ -41,11 +41,12 @@ export function TopicCreatePage() {
   const [category, setCategory] = useState<string>('')
   const [thumbnail, setThumbnail] = useState<File | string | null>(null)
 
-  useEffect(() => {
-    fetchTopic()
-  }, [])
-
   const fetchTopic = async () => {
+    if (!id) {
+      toast.error('토픽 정보를 불러올 수 없습니다.')
+      return
+    }
+
     try {
       const { data: topic, error } = await supabase
         .from('topic')
@@ -59,22 +60,42 @@ export function TopicCreatePage() {
 
       if (topic) {
         const { title, content, category, thumbnail } = topic[0]
+        let parsedContent: Block[] = []
 
-        setTitle(title)
-        setContent(JSON.parse(content))
-        setCategory(category)
-        setThumbnail(thumbnail)
+        if (typeof content === 'string') {
+          try {
+            parsedContent = JSON.parse(content) as Block[]
+          } catch (parseError) {
+            console.error(parseError)
+          }
+        } else if (Array.isArray(content)) {
+          parsedContent = content as Block[]
+        }
+
+        setTitle(title ?? '')
+        setContent(parsedContent)
+        setCategory(category ?? '')
+        setThumbnail(thumbnail ?? null)
       }
     } catch (error) {
-      console.log(error)
+      console.error(error)
       throw error
     }
   }
 
+  useEffect(() => {
+    fetchTopic()
+  }, [id])
+
   const handleSubmitTopic = async (status: TOPIC_STATUS) => {
-    if (!title || !content || !category || !thumbnail) {
+    if (!id) {
+      toast.error('토픽 정보를 불러올 수 없습니다.')
+      return false
+    }
+
+    if (!title.trim() || !content.length || !category.trim() || !thumbnail) {
       toast.warning('제목, 본문, 카테고리, 썸네일을 기입하세요.')
-      return
+      return false
     }
 
     // 1. 파일 업로드 시, Supabase의 Storage 즉 bucket 폴더에 이미지를 먼저 업로드 후
@@ -120,23 +141,30 @@ export function TopicCreatePage() {
 
     if (error) {
       toast.error(error.message)
-      return
+      return false
     }
 
     if (data) {
       toast.success(
-        TOPIC_STATUS.PUBLISH
+        status === TOPIC_STATUS.PUBLISH
           ? '작성 중인 토픽을 발행하였습니다.'
           : '작성 중인 토픽을 저장하였습니다.'
       )
+      return true
     }
+
+    return false
   }
 
-  const handleSave = () => handleSubmitTopic(TOPIC_STATUS.TEMP)
+  const handleSave = async () => {
+    await handleSubmitTopic(TOPIC_STATUS.TEMP)
+  }
 
-  const handlePublish = () => {
-    handleSubmitTopic(TOPIC_STATUS.PUBLISH)
-    navigate(routes.home)
+  const handlePublish = async () => {
+    const isSuccess = await handleSubmitTopic(TOPIC_STATUS.PUBLISH)
+    if (isSuccess) {
+      navigate(routes.home)
+    }
   }
 
   return (

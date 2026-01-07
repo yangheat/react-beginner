@@ -1,12 +1,13 @@
 import { useState } from 'react'
 import { NavLink, useNavigate } from 'react-router'
-import { toast } from 'sonner'
-import { z } from 'zod'
 import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
 
 import { ArrowLeft, Asterisk, ChevronRight } from 'lucide-react'
+import { toast } from 'sonner'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { z } from 'zod'
 
+import { routes } from '@/shared/config/routes.config'
 import {
   Button,
   Checkbox,
@@ -20,14 +21,13 @@ import {
   Label
 } from '@/components/ui'
 
-import { routes } from '@/shared/config/routes.config'
-import { registrationData } from '../../model/registration-schema'
 import { register } from '../../api/register'
+import { registrationSchema } from '../../model/registration-schema'
 
 export function SignUpForm() {
   const navigate = useNavigate()
-  const form = useForm<z.infer<typeof registrationData>>({
-    resolver: zodResolver(registrationData),
+  const form = useForm<z.infer<typeof registrationSchema>>({
+    resolver: zodResolver(registrationSchema),
     defaultValues: { email: '', password: '', confirmPassword: '' }
   })
 
@@ -35,7 +35,7 @@ export function SignUpForm() {
   const [privacyAgreed, setPrivacyAgreed] = useState<boolean>(false) // 개인정보 수집 및 이용약관 동의 여부
   const [marketingAgreed, setMarketingAgreed] = useState<boolean>(false) // 마케팅 및 광고 수신약관 동의 여부
 
-  async function onSubmit(values: z.infer<typeof registrationData>) {
+  async function onSubmit(values: z.infer<typeof registrationSchema>) {
     if (!serviceAgreed || !privacyAgreed) {
       // 경고 메시지 - Toast UI 발생
       toast.warning('필수 동의항목을 선택해주세요.')
