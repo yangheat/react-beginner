@@ -1,10 +1,12 @@
-import type z from "zod"
-import { toast } from "sonner"
+import { toast } from 'sonner'
+import { z } from 'zod'
 
-import supabase from "@/lib/supabase"
-import type { registrationData } from "../model/registration-schema"
+import { registrationSchema } from '../model/registration-schema'
+import supabase from '@/lib/supabase'
 
-export async function register(values: z.infer<typeof registrationData>) {
+type RegistrationInput = z.infer<typeof registrationSchema>
+
+export async function register(values: RegistrationInput) {
   try {
     const { data, error } = await supabase.auth.signUp({
       email: values.email,
@@ -20,7 +22,7 @@ export async function register(values: z.infer<typeof registrationData>) {
       return data
     }
   } catch (error) {
-    console.log(error)
-    throw new Error(`${error}`)
+    console.error(error)
+    throw new Error(String(error))
   }
 }

@@ -1,11 +1,12 @@
 import { Suspense, use, useMemo } from 'react'
 import { useNavigate, useSearchParams } from 'react-router'
-import { toast } from 'sonner'
-import { CircleSmall, NotebookPen, PencilLine } from 'lucide-react'
 
-import supabase from '@/lib/supabase'
-import { useAuthStore } from '@/stores'
+import { CircleSmall, NotebookPen, PencilLine } from 'lucide-react'
+import { toast } from 'sonner'
+
+import { useAuthStore } from '@/entities/user/model/auth-store'
 import { routes } from '@/shared/config/routes.config'
+import supabase from '@/lib/supabase'
 import { TOPIC_STATUS, type Topic } from '@/types/topic.type'
 
 import { AppDreaftsDialog, AppSidebar } from '../components/common'

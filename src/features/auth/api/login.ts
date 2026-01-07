@@ -1,16 +1,21 @@
-import type z from "zod";
-import { toast } from "sonner";
+import { z } from 'zod'
+import { toast } from 'sonner'
 
-import supabase from "@/lib/supabase";
-import type { SignInData } from "../model/signIn-schema";
+import { signInSchema } from '../model/signIn-schema'
+import supabase from '@/lib/supabase'
 
+type SignInInput = z.infer<typeof signInSchema>
 
-export async function login({ email, password }: z.infer<typeof SignInData>) {
+export async function login({ email, password }: SignInInput) {
   try {
-    const { data: { user, session }, error } = await supabase.auth.signInWithPassword({
-      email, password
-
+    const {
+      data: { user, session },
+      error
+    } = await supabase.auth.signInWithPassword({
+      email,
+      password
     })
+
     if (error) {
       toast.error(error.message)
       return
@@ -20,7 +25,7 @@ export async function login({ email, password }: z.infer<typeof SignInData>) {
       return user
     }
   } catch (error) {
-    console.log(error)
-    throw new Error(`${error}`)
+    console.error(error)
+    throw new Error(String(error))
   }
 }
